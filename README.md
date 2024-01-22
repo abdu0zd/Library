@@ -20,7 +20,7 @@ Then open the Library.sln so you can test or try the project.
 
 ## Controllers
 You will find three Controllers.
-- [Library/Controllers]([https://github.com/abdu0zd/Library/blob/master/Library/Controllers/BooksController.cs]) : BooksController.
+- [Library/Controllers](https://github.com/abdu0zd/Library/blob/master/Library/Controllers/BooksController.cs) : BooksController.
   Book controller it contain multi action method Like add book, delete book , edit book etc..
   
   
