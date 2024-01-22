@@ -29,6 +29,8 @@ You will find three Controllers.
 ## DataBase Class
 - [Library/DataAccess](https://github.com/abdu0zd/Library/blob/master/Library/DataAccess/AppDbContext.cs) : AppDbContext.
   it contain two action method OnConfiguring  it connect to the databse and OnModelCreating multi relations when it will create the database.
+- DataBase Diagram
+  ![DatabaseLibrary](https://github.com/abdu0zd/Library/assets/13774950/103b702d-6516-4b7b-b6c4-3742320d81da) 
 
 ## Usage Migration
 If you have a problem with the database you can easily
