@@ -74,6 +74,7 @@ Dependency injection (DI) is a design pattern that allows objects to receive the
 In other words, instead of hardcoding dependencies within a class, dependencies are "injected" into the class from the outside. 
 This approach enables the flexibility to substitute dependencies with different implementations, making the code more modular and maintainable.
 - [Library/Program](https://github.com/abdu0zd/Library/blob/master/Library/Program.cs) : Program.
+- Di scoped lifetime, the lifetime of a single request. [Service lifetimes](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-8.0#service-lifetimes) are described later in this topic.
   To use the Di we need to add our connection in program file.
 ```bash
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
