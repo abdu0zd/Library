@@ -2,39 +2,40 @@
 using Library.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersAsyncController : ControllerBase
     {
-        public AppDbContext Context { get; set; } 
-        public UsersController(AppDbContext context)
+        public AppDbContext Context { get; set; }
+        public UsersAsyncController(AppDbContext context)
         {
             Context = context;
         }
 
         [HttpPost]
-        public ActionResult<User> AddUser(string name)
+        public async Task<ActionResult<User>> AddUser(string name)
         {
 
 
-            Context.Database.EnsureCreated();
+            await Context.Database.EnsureCreatedAsync();
             if (string.IsNullOrEmpty(name))
             {
                 return BadRequest("الرجاء ادخال اسم المستخدم");
             }
             var user = new User { Name = name };
-            Context.users.Add(user);
-            Context.SaveChanges();
+            await Context.users.AddAsync(user);
+            await Context.SaveChangesAsync();
             return user;
 
 
 
         }
         [HttpPut]
-        public ActionResult<User> UpdateUser(int id, string name)
+        public async Task<ActionResult<User>> UpdateUser(int id, string name)
         {
 
 
@@ -42,21 +43,21 @@ namespace Library.Controllers
             {
                 return BadRequest("الرجاء ادخال اسم  او الايدي");
             }
-            var user = Context.users.FirstOrDefault(i => i.Id == id);
+            var user = await Context.users.FirstOrDefaultAsync(i => i.Id == id);
             if (user == null)
             {
                 return BadRequest("المستخدم غير موجود");
             }
             user.Name = name;
-            Context.SaveChanges();
+            await Context.SaveChangesAsync();
             return user;
 
         }
         [HttpGet]
-        public ActionResult<User> GetUser(int id)
+        public async Task<ActionResult<User>> GetUser(int id)
         {
 
-            var user = Context.users.FirstOrDefault(i => i.Id == id);
+            var user = await Context.users.FirstOrDefaultAsync(i => i.Id == id);
             if (user == null)
             {
                 return BadRequest("الكتاب غير موجود");
@@ -66,37 +67,37 @@ namespace Library.Controllers
 
         }
         [HttpGet("GetAllUsers")]
-        public List<User> GetAllUsers()
+        public async Task<List<User>> GetAllUsers()
         {
 
-            return Context.users.ToList();
+            return await Context.users.ToListAsync();
 
 
         }
 
         [HttpGet("Search")]
-        public List<User> searchUser(string value)
+        public async Task<List<User>> searchUser(string value)
         {
 
-            return Context.users.Where(i => (i.Name + i.Id).Trim().ToLower().Contains(value.Trim().ToLower())).ToList();
+            return await Context.users.Where(i => (i.Name + i.Id).Trim().ToLower().Contains(value.Trim().ToLower())).ToListAsync();
 
 
         }
 
         [HttpDelete]
-        public ActionResult<string> DeleteUser(int id)
+        public async Task<ActionResult<string>> DeleteUser(int id)
         {
 
-            var book = Context.books.FirstOrDefault(x => x.Id == id);
+            var book = await Context.books.FirstOrDefaultAsync(x => x.Id == id);
             if (book == null)
             {
                 return BadRequest("المستخدم غير موجود");
             }
-            Context.books.Remove(book);
-            Context.SaveChanges();
+            await Task.Run(() => Context.books.Remove(book));
+            await Context.SaveChangesAsync();
             return "تم الحذف بنجاح";
 
         }
     }
-
 }
+

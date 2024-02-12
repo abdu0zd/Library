@@ -10,10 +10,13 @@ namespace Library.DataAccess
         public DbSet<Book> books { get; set; }
         public DbSet<User> users { get; set; }
         public DbSet<Borrow> borrow { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-4DGV9IR;Database=Library;Trusted_Connection=True;trustservercertificate=true");
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("Server=DESKTOP-4DGV9IR;Database=Library;Trusted_Connection=True;trustservercertificate=true");
+        //}
+
+        //Dependency Injection in AppDbcontext
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 

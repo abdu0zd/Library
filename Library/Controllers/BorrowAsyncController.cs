@@ -8,20 +8,20 @@ namespace Library.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BorrowController : ControllerBase
+    public class BorrowAsyncController : ControllerBase
     {
-        public AppDbContext Context { get; set; } 
+        public AppDbContext Context { get; set; }
 
-        public BorrowController(AppDbContext context)
+        public BorrowAsyncController(AppDbContext context)
         {
             Context = context;
         }
         [HttpPost]
-        public ActionResult<Borrow> Borrow(int userid, int bookid, DateTime date)
+        public async Task<ActionResult<Borrow>> Borrow(int userid, int bookid, DateTime date)
         {
 
 
-            Context.Database.EnsureCreated();
+            await Context.Database.EnsureCreatedAsync();
             if (userid == null || bookid == null || date == null)
             {
                 return BadRequest("الرجاء ادخال اسم الكتاب او اسم الكاتب");
@@ -39,35 +39,35 @@ namespace Library.Controllers
                 return BadRequest("هذا المستخدم غير موجود");
             }
             var borrow = new Borrow(userid, bookid, date);
-            Context.borrow.Add(borrow);
-            Context.SaveChanges();
+            await Context.borrow.AddAsync(borrow);
+            await Context.SaveChangesAsync();
             return borrow;
         }
         [HttpGet("SearchBorrow")]
-        public List<Borrow> searchBorrow(int UserId)
+        public async Task<List<Borrow>> searchBorrow(int UserId)
         {
 
-            return Context.borrow.Where(i => i.UserId == UserId).ToList();
+            return await Context.borrow.Where(i => i.UserId == UserId).ToListAsync();
 
         }
 
         [HttpDelete]
-        public ActionResult<string> ReturnBook(int userId, int bookId)
+        public async Task<ActionResult<string>> ReturnBook(int userId, int bookId)
         {
 
-            var borrow = Context.borrow.FirstOrDefault(x => x.UserId == userId && x.BookId == bookId);
+            var borrow = await Context.borrow.FirstOrDefaultAsync(x => x.UserId == userId && x.BookId == bookId);
             if (borrow == null)
             {
                 return BadRequest(" هذا المستخدم لم يستأجر هذا الكتاب");
             }
-            Context.borrow.Remove(borrow);
-            Context.SaveChanges();
+            await Task.Run(() => Context.borrow.Remove(borrow));
+            Context.SaveChangesAsync();
             return "تم الحذف بنجاح";
         }
         [HttpGet("EndedTime")]
-        public List<Borrowedbook> GetAll(int userId)
+        public async Task<List<Borrowedbook>> GetAll(int userId)
         {
-            var user = Context.users.Include(i=>i.BorrowBooks).ThenInclude(i=>i.Book).FirstOrDefault(x => x.Id == userId);
+            var user = await Context.users.Include(i => i.BorrowBooks).ThenInclude(i => i.Book).FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null)
             {
                 BadRequest("لا يوجد مستخدم");
@@ -82,3 +82,4 @@ namespace Library.Controllers
         }
     }
 }
+
