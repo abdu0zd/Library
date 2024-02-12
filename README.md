@@ -68,6 +68,60 @@ You will find three Async Controllers.
 - Using Async Method
   it contain multi action method Like add User, delete User , edit User etc..
 
+
+## Dependency injection
+Dependency injection (DI) is a design pattern that allows objects to receive their dependencies from an external source rather than creating them internally.
+In other words, instead of hardcoding dependencies within a class, dependencies are "injected" into the class from the outside. 
+This approach enables the flexibility to substitute dependencies with different implementations, making the code more modular and maintainable.
+- [Library/Program](https://github.com/abdu0zd/Library/blob/master/Library/Program.cs) : Program.
+  To use the Di we need to add our connection in program file.
+```bash
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+```
+And to make the connection you will find file called appsettings.json and here we will add our connction string.
+Default appsettings.json file
+```bash
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+    "AllowedHosts": "*"
+ }
+```
+We will add our string After "AllowedHosts": "*"
+appsettings.json After edited 
+```bash
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+    "AllowedHosts": "*",
+    "ConnectionStrings": {
+        "DefaultConnection": "Server=DESKTOP-4DGV9IR;Database=Library;Trusted_Connection=True;trustservercertificate=true"
+     }
+    }
+```
+
+Now we need to go to Our AppDbContext.cs and add Di
+```bash
+ public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+```
+Now the Controllers We need to add A variable i will call it Context and it can be public or readonly i will leave it public
+```bash
+ public AppDbContext Context { get; set; }
+
+ public BooksAsyncController(AppDbContext context)
+ {
+     Context = context;
+ }
+```
+
 ## DataBase Class
 - [Library/DataAccess](https://github.com/abdu0zd/Library/blob/master/Library/DataAccess/AppDbContext.cs) : AppDbContext.
   it contain two action method OnConfiguring  it connect to the databse and OnModelCreating multi relations when it will create the database.
