@@ -25,7 +25,49 @@ You will find three Controllers.
 - [Library/Controllers](https://github.com/abdu0zd/Library/blob/master/Library/Controllers/BorrowController.cs) : BorrowController.
   it contain multi action method Like add date of borrow, search the day of borrow , return a book etc..
 - [Library/Controllers](https://github.com/abdu0zd/Library/blob/master/Library/Controllers/UsersController.cs) : UsersController.
-  it contain multi action method Like add User, delete User , edit User etc..  
+  it contain multi action method Like add User, delete User , edit User etc..
+
+## Async Method 
+Use the async modifier to specify that a method, lambda expression, or anonymous method is asynchronous. If you use this modifier on a method or expression, it's referred to as an async method. 
+The following example defines an async method named BooksAsyncController:
+```bash
+[HttpPost]
+public async Task<ActionResult<Book>> AddBook(string name, string author){
+
+}
+```
+If you're new to asynchronous programming or do not understand how an async method uses the [await operator](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/await) to do potentially long-running work without blocking the caller's thread,
+[read the introduction in Asynchronous programming with async and await](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/).
+```bash
+[HttpPost]
+public async Task<ActionResult<Book>> AddBook(string name, string author){
+
+ await Context.Database.EnsureCreatedAsync();
+ if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(author))
+ {
+     return BadRequest("الرجاء ادخال اسم الكتاب او اسم الكاتب");
+ }
+ var book = new Book { Name = name, Author = author };
+ await Context.books.AddAsync(book);
+ await Context.SaveChangesAsync();
+ return book;
+}
+```
+An async method runs synchronously until it reaches its first await expression, at which point the method is suspended until the awaited task is complete.
+In the meantime, control returns to the caller of the method, as the example in the next section shows.
+
+## Async Controllers 
+You will find three Async Controllers.
+- [Library/Controllers](https://github.com/abdu0zd/Library/blob/master/Library/Controllers/BooksAsyncController.cs) : BooksAsyncController.
+- Using Async Method 
+  it contain multi action method Like add book, delete book , edit book etc..
+- [Library/Controllers](https://github.com/abdu0zd/Library/blob/master/Library/Controllers/BorrowAsyncController.cs) : BorrowAsyncController.
+- Using Async Method
+  it contain multi action method Like add date of borrow, search the day of borrow , return a book etc..
+- [Library/Controllers](https://github.com/abdu0zd/Library/blob/master/Library/Controllers/UsersAsyncController.cs) : UsersAsyncController.
+- Using Async Method
+  it contain multi action method Like add User, delete User , edit User etc..
+
 ## DataBase Class
 - [Library/DataAccess](https://github.com/abdu0zd/Library/blob/master/Library/DataAccess/AppDbContext.cs) : AppDbContext.
   it contain two action method OnConfiguring  it connect to the databse and OnModelCreating multi relations when it will create the database.
